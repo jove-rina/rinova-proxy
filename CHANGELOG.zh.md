@@ -1,93 +1,42 @@
 # 变更记录
 
-## [1.2.0] — 2026-07-04
+## [2.0.0] — 2026-07-04
 
-### 新增
+**Rinova Proxy** 首次发布 — 代理订阅链接 → Clash 配置文件转换工具。
 
-- **Monorepo 拆分**：SDK（`@rinova/proxy-sdk`）与 CLI（`@rinova/proxy-cli`）双包分离，pnpm workspace 管理。
-  - SDK 依赖 axios + js-yaml，**不含 Commander**
-  - CLI 依赖 `@rinova/proxy-sdk` + commander + js-yaml
-  - `pnpm build` / `pnpm test` / `pnpm typecheck` 根脚本覆盖双包
-- **SDK (`@rinova/proxy-sdk`)**: 程序化 API，支持在 Node.js 项目中 import 使用。
-  - `convert(url)` — 一键拉取订阅 → 解析 → Clash 配置
-  - `convertFromLines(lines)` — 离线转换（无网络请求）
-  - 子模块按需导入：`@rinova/proxy-sdk/parser`、`/fetch`、`/builder`、`/server`
-  - 包名改为 `@rinova/proxy-sdk`，支持 scoped publish
-- **i18n 国际化**: 零依赖本地化模块，支持 en/zh 双语。
-  - `t(key, params?)` — 按 `LANG`/`LC_ALL` 自动中英切换
-  - `getLang()` — 获取当前语言代码
-  - `locales/en.json` + `locales/zh.json`，覆盖全部日志、错误消息、Commander help
-- **`package.json` exports**: 主入口 + 4 子模块，类型声明完整。
-- **SDK 空节点保护**: `convert()` / `convertFromLines()` 在无有效节点时 throw `Error`。
-- **`publishConfig`**: `"access": "public"` + `files` 白名单，NPM 发布就绪。
+### 包
 
-### 修复
+- **`@rinova/proxy-sdk@2.0.0`** — Node.js SDK
+- **`@rinova/proxy-cli@2.0.0`** — CLI 工具（`proxy-cli`）
 
-- **CLI bin 更名**：`jms-convert` → `jms-cli`（`package.json` bin + Commander name）
-- **CLI 改用 `convert()`**：`runConvert` 改为调用 SDK 高层 API，不再手动编排 fetch→parse→build
-- **server SDK 化**: 端口冲突 `process.exit(1)` → throw；移除全局 `process.on('SIGINT')`，CLI 侧接管退出逻辑。
+### 功能
+
+- **协议解析**：Shadowsocks（SIP002 + Legacy）、VMess（ws / tcp / grpc / h2 / quic / kcp）、Trojan、Hysteria2（`hysteria2://` + `hy2://`）
+- **SDK API**：`convert(url)`、`convertFromLines(lines)`、子模块按需导入（`/parser`、`/fetch`、`/builder`、`/server`）
+- **CLI**：单次转换（`-u`）、HTTP 订阅服务（`-p`）、合并模式（`--merge`）、内置/外部规则
+- **策略组**：ACL4SSR 风格链式引用（`🌍 国外网站` → `🚀 节点选择`）
+- **HTTP 服务**：`/clash.yaml`、`/health`（含 `lastError`）、`POST /refresh`
+- **国际化**：通过 `LANG`/`LC_ALL` 自动 en/zh 切换；SDK 导出 `t()`、`getLang()`
+- **工具**：节点名去重、订阅 URL 掩码、Base64/URL 解码容错
+
+### 架构
+
+- pnpm workspace monorepo（`rinova-proxy`）
+- SDK：axios + js-yaml（不含 Commander）
+- CLI：`@rinova/proxy-sdk` + commander + js-yaml
 
 ### 测试
 
-- 新增 `src/__tests__/sdk.test.ts`（10 case），覆盖 convertFromLines、空节点 throw、去重、规则模式。
-- 测试总数：**40 case**（parser 22 + builder 2 + sdk 10 + server 6）。
+- **40 case**：parser 22 + builder 2 + sdk 10 + server 6
 
 ### 文档
 
-- README 新增「SDK 使用」章节，含安装、示例、子模块表格。
-- README 项目结构新增 `sdk.ts` / `sdk.test.ts`。
-- README 新增「国际化（i18n）」章节，说明 `LANG` 用法。
-- README 安装部分改为优先展示 npm 发布命令。
-- CHANGELOG 首次记录 SDK 与包名变更。
+- 根 README（中英文）、SDK README（323 行 API 参考）、CLI README
+- MIT 许可证
 
-### 发布
+### 安装
 
-- 已发布至 npm：`@rinova/proxy-sdk@1.2.0` + `@rinova/proxy-cli@1.2.0`
-- 使用方式：`pnpm add -g @rinova/proxy-cli` 或 `pnpm add @rinova/proxy-sdk`
-
----
-
-## [1.2.1] — 2026-07-04
-
-### 新增
-
-- **`getLang()`**: SDK 新增导出，返回当前语言代码（`'en'` | `'zh'`）。
-- **服务标题 i18n**: 启动横幅使用 `t('server_title')` 键；中文 locale 显示 `"JMS 转换服务"`。
-- **许可证**: ISC → MIT，新增根目录 `LICENSE` 文件。
-- **分包 README**: 新增四份 — `packages/sdk/README(.zh).md` 和 `packages/cli/README(.zh).md`。
-
-### 修复
-
-- **优雅关闭**: `srv.close(() => process.exit(0))` 确保端口完全释放后再退出，防止重启时「端口被占用」。
-- **User-Agent**: 更新为 `@rinova/proxy-sdk/1.2.1`（原为 `1.2.0`）。
-- **CLI 导入清理**: 移除未使用的 `fileURLToPath` 和 `dirname` 导入。
-- **README.zh.md**: 新增国际化章节，更新项目结构树。
-- **README.md**: 结构树根目录从 `jms-convert-tool/` 改为 `rinova-jms/`。
-
-### 文档
-
-- CHANGELOG: 首次记录 v1.2.1 polish 发布。
-
----
-
-## [1.1.1] — 2026-07-04
-
-### 修复
-
-- **策略组链路**：`🌍 国外网站` 的默认第一项由 `♻️ 自动选择` 改为 `🚀 节点选择`，与 ACL4SSR / jmspro.cc 模板一致。
-  - **现象**：在 Verge 中切换 `🚀 节点选择` 后，查 IP 始终显示同一地址（url-test 选中的最快节点）。
-  - **原因**：规则（含 `MATCH` 兜底）指向 `🌍 国外网站`，而该组默认走 `♻️ 自动选择`，与 `🚀 节点选择` 未串联。
-  - **修复后流量路径**：`规则 → 🌍 国外网站 → 🚀 节点选择 → 用户选中的节点`。
-
-### 测试
-
-- 新增 `src/__tests__/builder.test.ts`（2 case），验证 `🌍 国外网站` 链式引用。
-- `pnpm test` 现同时运行 parser + builder 测试（24 case）。
-
----
-
-## [1.1.0] — 2026-07-04
-
-- HTTP 订阅服务模式（`-p`）：本地 `/clash.yaml` 供 Verge Rev 定时拉取。
-- SS / VMess / Trojan / Hysteria2 四协议解析。
-- parser 22 case + server 6 case 集成测试。
+```bash
+pnpm add -g @rinova/proxy-cli
+pnpm add @rinova/proxy-sdk
+```

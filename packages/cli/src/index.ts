@@ -21,7 +21,7 @@ if (lang === 'zh') {
   program
     .name('proxy-cli')
     .description('代理订阅链接 → Clash 配置文件')
-    .version('1.2.1')
+    .version('2.0.0')
     .option('-u, --url <url>', '代理订阅链接')
     .option('-o, --output <path>', '输出文件路径', '')
     .option('-p, --port <port>', '服务模式：监听端口（默认 25500）')
@@ -32,7 +32,7 @@ if (lang === 'zh') {
   program
     .name('proxy-cli')
     .description('Proxy subscription → Clash config')
-    .version('1.2.1')
+    .version('2.0.0')
     .option('-u, --url <url>', 'Proxy subscription URL')
     .option('-o, --output <path>', 'output path', '')
     .option('-p, --port <port>', 'serve mode: HTTP port (default 25500)')

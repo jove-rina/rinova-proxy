@@ -11,7 +11,7 @@ export const fetchSubscription = async (url: string): Promise<string[]> => {
     responseType: 'text',
     headers: {
       // Keep in sync with packages/sdk/package.json version
-      'User-Agent': '@rinova/proxy-sdk/1.2.1',
+      'User-Agent': '@rinova/proxy-sdk/2.0.0',
     },
   });
 

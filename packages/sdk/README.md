@@ -2,10 +2,13 @@
 
 JMS (Just My Sockets) subscription to Clash configuration converter — Node.js SDK.
 
+> **v2.0.0**
+
 ## Install
 
 ```bash
 pnpm add @rinova/proxy-sdk
+npm install @rinova/proxy-sdk
 ```
 
 ## Quick Start
@@ -215,14 +218,14 @@ const config = buildConfig(parsedNodes, 'builtin');
 // config.rules           → string[]
 ```
 
-The config includes chained policy groups:
+The config includes ACL4SSR-style chained policy groups (Chinese emoji labels):
 ```
-🚀 Node Select → user picks node
-♻️ Auto Select → url-test, lowest latency
-🎯 Direct      → direct connection
-🌍 Foreign     → follows 🚀 Node Select (default)
-🇨🇳 Domestic    → domestic routing
-🛑 Ad Blocking → REJECT
+🚀 节点选择 → user picks node
+♻️ 自动选择 → url-test, lowest latency
+🎯 直连      → direct connection
+🌍 国外网站  → follows 🚀 节点选择 (default)
+🇨🇳 国内网站  → domestic routing
+🛑 广告拦截  → REJECT
 ```
 
 ---

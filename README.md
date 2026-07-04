@@ -1,6 +1,8 @@
-# Rinova Proxy 
+# Rinova Proxy
 
 Convert subscription links to Clash configuration files.
+
+> **v2.0.0** — `@rinova/proxy-sdk` + `@rinova/proxy-cli`
 
 ## Installation
 
@@ -9,10 +11,11 @@ Convert subscription links to Clash configuration files.
 ```bash
 # CLI (global)
 pnpm add -g @rinova/proxy-cli
-# or: npm install -g @rinova/proxy-cli
+npm install -g @rinova/proxy-cli
 
 # SDK (as a library)
 pnpm add @rinova/proxy-sdk
+npm install @rinova/proxy-sdk
 ```
 
 ### From source
@@ -33,17 +36,17 @@ pnpm build
 ```bash
 pnpm add -g @rinova/proxy-cli
 
-jms-cli -u "https://your-jms-subscription-url"
-jms-cli -u "https://..." -o ~/Downloads/my-clash.yaml
-jms-cli -u "https://..." --rules builtin
-jms-cli -u "https://..." --merge ~/.config/clash-verge-rev/profiles/current.yaml
-jms-cli -p 25500 -u "https://..." -i 60
+proxy-cli -u "https://your-jms-subscription-url"
+proxy-cli -u "https://..." -o ~/Downloads/my-clash.yaml
+proxy-cli -u "https://..." --rules builtin
+proxy-cli -u "https://..." --merge ~/.config/clash-verge-rev/profiles/current.yaml
+proxy-cli -p 25500 -u "https://..." -i 60
 ```
 
 ### Local development
 
 ```bash
-pnpm dev -u "https://..."                    # same as jms-cli -u ...
+pnpm dev -u "https://..."                    # same as proxy-cli -u ...
 pnpm dev -p 25500 -u "https://..." -i 60    # serve mode
 ```
 
@@ -61,7 +64,7 @@ Update interval: 60
 | Path | Description |
 |------|-------------|
 | `/clash.yaml` | Clash config (YAML) |
-| `/health` | Health check JSON (status, nodes, updatedAt, nextRefreshMin) |
+| `/health` | Health check JSON (status, nodes, updatedAt, nextRefreshMin, lastError) |
 | `/refresh` | POST to trigger manual refresh (response: `{ ok, skipped, nodes }`) |
 
 ### Build and run
@@ -139,25 +142,25 @@ import { startServer } from '@rinova/proxy-sdk/server';
 The generated Clash config uses ACL4SSR-style **chained policy groups** to ensure Verge's node selector controls actual traffic:
 
 ```
-Rule MATCH / Foreign domains
+Rule MATCH / foreign domains
     ↓
-🌍 Foreign Websites (default: first item)
+🌍 国外网站 (default: first item)
     ↓
-🚀 Node Select ← Switch nodes in Verge
+🚀 节点选择 ← Switch nodes in Verge
     ↓
-Specific JMS node
+Specific proxy node
 ```
 
 | Group | Purpose |
 |-------|---------|
-| `🚀 Node Select` | Main node selector, shown by default in Verge |
-| `♻️ Auto Select` | url-test, picks lowest latency node |
-| `🎯 Direct` | Direct connection or proxy |
-| `🌍 Foreign Websites` | Referenced by rules, **defaults to follow `🚀 Node Select`** |
-| `🇨🇳 Domestic Websites` | Domestic domain routing |
-| `🛑 Ad Blocking` | Ad domain REJECT |
+| `🚀 节点选择` | Main node selector, shown by default in Verge |
+| `♻️ 自动选择` | url-test, picks lowest latency node |
+| `🎯 直连` | Direct connection or proxy |
+| `🌍 国外网站` | Referenced by rules, **defaults to follow `🚀 节点选择`** |
+| `🇨🇳 国内网站` | Domestic domain routing |
+| `🛑 广告拦截` | Ad domain REJECT |
 
-> **Note**: Switch nodes in `🚀 Node Select`; keep `🌍 Foreign Websites` at its default.
+> **Note**: Group names are Chinese emoji labels (ACL4SSR-style). Switch nodes in `🚀 节点选择`; keep `🌍 国外网站` at its default.
 
 ## Internationalization (i18n)
 
@@ -165,10 +168,10 @@ CLI and SDK messages automatically adapt to your system language based on the `L
 
 ```bash
 # English (default on most systems)
-jms-cli -u "https://..."
+proxy-cli -u "https://..."
 
 # Chinese
-LANG=zh_CN.UTF-8 jms-cli -u "https://..."
+LANG=zh_CN.UTF-8 proxy-cli -u "https://..."
 ```
 
 The translation function `t(key, params?)` is available from the SDK:
@@ -184,8 +187,8 @@ console.log(getLang());                    // "en" or "zh"
 Commander help text also switches language:
 
 ```bash
-LANG=en_US.UTF-8 jms-cli --help   # English options
-LANG=zh_CN.UTF-8 jms-cli --help   # Chinese options
+LANG=en_US.UTF-8 proxy-cli --help   # English options
+LANG=zh_CN.UTF-8 proxy-cli --help   # Chinese options
 ```
 
 ## Testing
@@ -212,6 +215,8 @@ rinova-proxy/
 ├── CHANGELOG.md
 ├── README.md
 ├── README.zh.md
+├── MILESTONE-2.0.0-ARCHIVE.md   v2.0.0 milestone archive (plans + review)
+├── MILESTONE-2.0.0-ARCHIVE.zh.md
 ├── packages/
 │   ├── sdk/                    → @rinova/proxy-sdk
 │   │   ├── package.json        deps: axios + js-yaml
@@ -232,7 +237,7 @@ rinova-proxy/
 │   └── cli/                    → @rinova/proxy-cli
 │       ├── package.json        deps: @rinova/proxy-sdk + commander
 │       ├── tsconfig.json
-│       └── src/index.ts        CLI entry (bin: jms-cli)
+│       └── src/index.ts        CLI entry (bin: proxy-cli)
 ```
 
 ## Changelog

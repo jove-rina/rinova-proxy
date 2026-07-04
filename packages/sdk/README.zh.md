@@ -2,10 +2,13 @@
 
 代理订阅链接 → Clash 配置文件转换工具 — Node.js SDK。
 
+> **v2.0.0**
+
 ## 安装
 
 ```bash
 pnpm add @rinova/proxy-sdk
+npm install @rinova/proxy-sdk
 ```
 
 ## 快速开始

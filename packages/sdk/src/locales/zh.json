@@ -17,7 +17,7 @@
   "no_nodes": "未找到有效节点",
   "shutting_down": "关闭服务...",
   "http_start": "启动 HTTP 服务，每 {interval} 分钟自动刷新",
-  "server_title": "Proxy Server",
+  "server_title": "代理服务",
   "server_banner_clash": "订阅地址：",
   "server_banner_health": "健康检查：",
   "err_empty_subscription": "订阅链接返回为空或格式无法识别",
