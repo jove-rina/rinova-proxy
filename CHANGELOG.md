@@ -1,0 +1,59 @@
+# Changelog
+
+## [1.2.0] — 2026-07-04
+
+### Added
+
+- **Monorepo split**: SDK (`@rinova/jms-sdk`) and CLI (`@rinova/jms-cli`) separated as two packages under pnpm workspace.
+  - SDK depends on axios + js-yaml, **no Commander**
+  - CLI depends on `@rinova/jms-sdk` + commander + js-yaml
+  - Root scripts (`pnpm build` / `pnpm test` / `pnpm typecheck`) cover both packages
+- **SDK (`@rinova/jms-sdk`)**: Programmatic API for Node.js projects.
+  - `convert(url)` — one-shot: fetch → parse → Clash config
+  - `convertFromLines(lines)` — offline conversion (no network)
+  - Submodule imports: `@rinova/jms-sdk/parser`, `/fetch`, `/builder`, `/server`
+  - Package renamed to scoped `@rinova/jms-sdk`
+- **`package.json` exports**: Main entry + 4 submodules, full type declarations.
+- **Empty node protection**: `convert()` / `convertFromLines()` throw `Error` on empty results.
+- **`publishConfig`**: `"access": "public"` + `files` whitelist, ready for npm publish.
+
+### Fixed
+
+- **CLI bin renamed**: `jms-convert` → `jms-cli` (package.json bin + Commander name)
+- **CLI uses `convert()`**: `runConvert` now calls SDK high-level API instead of manual fetch→parse→build pipeline
+- **Server SDK-safe**: Port conflict uses `throw` instead of `process.exit(1)`; global `process.on('SIGINT')` removed, CLI handles shutdown.
+
+### Tests
+
+- New `src/__tests__/sdk.test.ts` (10 cases): convertFromLines, empty node throw, dedup, rule mode.
+- Total tests: **40 cases** (parser 22 + builder 2 + sdk 10 + server 6).
+
+### Docs
+
+- README: new "SDK Usage" section with install, examples, submodule table.
+- README: project structure updated with `sdk.ts` / `sdk.test.ts`.
+- CHANGELOG: first recording of SDK and package rename.
+
+---
+
+## [1.1.1] — 2026-07-04
+
+### Fixed
+
+- **Policy group chain**: `🌍 Foreign Websites` default changed from `♻️ Auto Select` to `🚀 Node Select`, matching ACL4SSR / jmspro.cc template.
+  - **Issue**: Switching nodes in `🚀 Node Select` always showed the same IP (the url-test winner).
+  - **Root cause**: Rules (including `MATCH`) pointed to `🌍 Foreign Websites`, which defaulted to `♻️ Auto Select` instead of chaining to `🚀 Node Select`.
+  - **Fixed traffic path**: `Rule → 🌍 Foreign Websites → 🚀 Node Select → User selected node`.
+
+### Tests
+
+- New `src/__tests__/builder.test.ts` (2 cases): validates `🌍 Foreign Websites` chained reference.
+- `pnpm test` now runs parser + builder tests (24 cases).
+
+---
+
+## [1.1.0] — 2026-07-04
+
+- HTTP subscription service mode (`-p`): local `/clash.yaml` for Verge Rev auto-refresh.
+- SS / VMess / Trojan / Hysteria2 protocol parsing.
+- parser 22 cases + server 6 cases integration tests.

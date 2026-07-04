@@ -1,0 +1,13 @@
+{
+  "name": "jms-convert-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @rinova/jms-cli dev",
+    "build": "pnpm --filter @rinova/jms-sdk build && pnpm --filter @rinova/jms-cli build",
+    "test": "pnpm --filter @rinova/jms-sdk test:all",
+    "typecheck": "pnpm --filter @rinova/jms-sdk typecheck && pnpm --filter @rinova/jms-cli typecheck",
+    "publish:sdk": "pnpm --filter @rinova/jms-sdk publish",
+    "publish:cli": "pnpm --filter @rinova/jms-cli publish"
+  },
+  "packageManager": "pnpm@10.25.0"
+}
