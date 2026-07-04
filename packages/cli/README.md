@@ -1,12 +1,12 @@
-# @rinova/jms-cli
+# @rinova/proxy-cli
 
-JMS subscription to Clash config converter — CLI tool.
+Proxy subscription to Clash config converter — CLI tool.
 
 ## Install
 
 ```bash
-pnpm add -g @rinova/jms-cli
-# or: npm install -g @rinova/jms-cli
+pnpm add -g @rinova/proxy-cli
+# or: npm install -g @rinova/proxy-cli
 ```
 
 ## Usage

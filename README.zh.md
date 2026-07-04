@@ -1,6 +1,6 @@
-# Rinova JMS 
+# Rinova Proxy 
 
-JMS（Just My Sockets）订阅链接 → Clash 配置文件转换工具。
+订阅链接 → Clash 配置文件转换工具。
 
 ## 安装
 
@@ -8,18 +8,19 @@ JMS（Just My Sockets）订阅链接 → Clash 配置文件转换工具。
 
 ```bash
 # CLI（全局安装）
-pnpm add -g @rinova/jms-cli
-# 或：npm install -g @rinova/jms-cli
+pnpm add -g @rinova/proxy-cli
+npm install -g @rinova/proxy-cli
 
 # SDK（作为库引用）
-pnpm add @rinova/jms-sdk
+pnpm add @rinova/proxy-sdk
+npm install @rinova/proxy-sdk
 ```
 
 ### 从源码构建
 
 ```bash
-git clone git@github.com:jove-rina/rinova-jms.git
-cd rinova-jms
+git clone git@github.com:jove-rina/rinova-proxy.git
+cd rinova-proxy
 pnpm install
 pnpm build
 ```
@@ -31,7 +32,7 @@ pnpm build
 ### 全局安装（发布后）
 
 ```bash
-pnpm add -g @rinova/jms-cli
+pnpm add -g @rinova/proxy-cli
 
 jms-cli -u "https://your-jms-subscription-url"
 jms-cli -u "https://..." -o ~/Downloads/my-clash.yaml
@@ -67,21 +68,21 @@ URL: http://127.0.0.1:25500/clash.yaml
 ### 编译运行
 
 ```bash
-pnpm --filter @rinova/jms-cli start -u "https://..."
+pnpm --filter @rinova/proxy-cli start -u "https://..."
 # 或
 node packages/cli/dist/index.js -u "https://..."
 ```
 
 ## SDK 使用
 
-`@rinova/jms-sdk` 可以在 Node.js 项目中 import 使用：
+`@rinova/proxy-sdk` 可以在 Node.js 项目中 import 使用：
 
 ```bash
-pnpm add @rinova/jms-sdk
+pnpm add @rinova/proxy-sdk
 ```
 
 ```typescript
-import { convert } from '@rinova/jms-sdk';
+import { convert } from '@rinova/proxy-sdk';
 
 // 一键转换：拉取订阅 → 解析 → 生成 Clash 配置
 const { yaml, nodes } = await convert('https://jms-sub-url');
@@ -92,7 +93,7 @@ writeFileSync('clash.yaml', yaml);
 从已有 URI 行离线转换：
 
 ```typescript
-import { convertFromLines } from '@rinova/jms-sdk';
+import { convertFromLines } from '@rinova/proxy-sdk';
 
 const { config } = convertFromLines([
   'ss://YWVz...@host:8388#US-01',
@@ -103,17 +104,17 @@ const { config } = convertFromLines([
 子模块按需导入：
 
 ```typescript
-import { parseURI } from '@rinova/jms-sdk/parser';
-import { startServer } from '@rinova/jms-sdk/server';
+import { parseURI } from '@rinova/proxy-sdk/parser';
+import { startServer } from '@rinova/proxy-sdk/server';
 ```
 
 | 导入路径 | 可用 API |
 |----------|---------|
-| `@rinova/jms-sdk` | `convert()`, `convertFromLines()`, 类型, 子模块 re-export |
-| `@rinova/jms-sdk/parser` | `parseURI()`, `parseLines()` |
-| `@rinova/jms-sdk/fetch` | `fetchSubscription()`, `deduplicateNames()` |
-| `@rinova/jms-sdk/builder` | `buildConfig()`, `toYaml()` |
-| `@rinova/jms-sdk/server` | `startServer()` |
+| `@rinova/proxy-sdk` | `convert()`, `convertFromLines()`, 类型, 子模块 re-export |
+| `@rinova/proxy-sdk/parser` | `parseURI()`, `parseLines()` |
+| `@rinova/proxy-sdk/fetch` | `fetchSubscription()`, `deduplicateNames()` |
+| `@rinova/proxy-sdk/builder` | `buildConfig()`, `toYaml()` |
+| `@rinova/proxy-sdk/server` | `startServer()` |
 
 ## 支持协议
 
@@ -159,11 +160,40 @@ import { startServer } from '@rinova/jms-sdk/server';
 
 > **注意**：切换节点请在 `🚀 节点选择` 中进行；`🌍 国外网站` 保持默认即可。
 
+## 国际化（i18n）
+
+CLI 和 SDK 的消息文本根据 `LANG` 或 `LC_ALL` 环境变量自动切换。以 `zh` 开头显示中文，其余默认英文。
+
+```bash
+# 英文（大多数系统默认）
+jms-cli -u "https://..."
+
+# 中文
+LANG=zh_CN.UTF-8 jms-cli -u "https://..."
+```
+
+SDK 提供翻译函数供程序化使用：
+
+```typescript
+import { t, getLang } from '@rinova/proxy-sdk';
+
+console.log(t('refreshing'));              // "刷新订阅..."
+console.log(t('parsed', { count: 5 }));    // "解析成功：5 个节点"
+console.log(getLang());                    // "en" 或 "zh"
+```
+
+Commander 帮助文本同样支持双语：
+
+```bash
+LANG=en_US.UTF-8 jms-cli --help   # 英文帮助
+LANG=zh_CN.UTF-8 jms-cli --help   # 中文帮助
+```
+
 ## 测试
 
 ```bash
 pnpm test               # SDK 全部测试（34 + 6 = 40 case）
-pnpm --filter @rinova/jms-sdk test:all
+pnpm --filter @rinova/proxy-sdk test:all
 ```
 
 | 套件 | 位置 | case 数 |
@@ -177,17 +207,23 @@ pnpm --filter @rinova/jms-sdk test:all
 ## 项目结构
 
 ```
-jms-convert-tool/
+rinova-proxy/
 ├── pnpm-workspace.yaml         workspace 配置
 ├── package.json                根：dev / build / test / typecheck 快捷脚本
+├── LICENSE                     MIT 协议
 ├── CHANGELOG.md / CHANGELOG.zh.md
 ├── README.md / README.zh.md
 ├── packages/
-│   ├── sdk/                    → @rinova/jms-sdk
+│   ├── sdk/                    → @rinova/proxy-sdk
 │   │   ├── package.json       依赖：axios + js-yaml
 │   │   ├── tsconfig.json
+│   │   ├── README.md / README.zh.md
 │   │   └── src/
 │   │       ├── index.ts        convert / convertFromLines
+│   │       ├── i18n.ts         国际化：t(), getLang()
+│   │       ├── locales/
+│   │       │   ├── en.json     英文翻译
+│   │       │   └── zh.json     中文翻译
 │   │       ├── parser.ts       SS / VMess / Trojan / Hysteria2 解析
 │   │       ├── fetch.ts        拉取 + Base64 解码 + 去重
 │   │       ├── builder.ts      Clash YAML 组装
@@ -195,9 +231,10 @@ jms-convert-tool/
 │   │       ├── utils.ts        工具函数
 │   │       ├── types.ts        类型定义
 │   │       └── __tests__/      40 case
-│   └── cli/                    → @rinova/jms-cli
-│       ├── package.json       依赖：@rinova/jms-sdk + commander
+│   └── cli/                    → @rinova/proxy-cli
+│       ├── package.json       依赖：@rinova/proxy-sdk + commander
 │       ├── tsconfig.json
+│       ├── README.md / README.zh.md
 │       └── src/index.ts        CLI 入口（bin: jms-cli）
 ```
 

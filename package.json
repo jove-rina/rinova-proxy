@@ -1,13 +1,16 @@
 {
-  "name": "rinova-jms",
+  "name": "rinova-proxy",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter @rinova/jms-cli dev",
-    "build": "pnpm --filter @rinova/jms-sdk build && pnpm --filter @rinova/jms-cli build",
-    "test": "pnpm --filter @rinova/jms-sdk test:all",
-    "typecheck": "pnpm --filter @rinova/jms-sdk typecheck && pnpm --filter @rinova/jms-cli typecheck",
-    "publish:sdk": "pnpm --filter @rinova/jms-sdk publish",
-    "publish:cli": "pnpm --filter @rinova/jms-cli publish"
+    "dev": "pnpm --filter @rinova/proxy-cli dev",
+    "build": "pnpm --filter @rinova/proxy-sdk build && pnpm --filter @rinova/proxy-cli build",
+    "test": "pnpm --filter @rinova/proxy-sdk test:all",
+    "typecheck": "pnpm --filter @rinova/proxy-sdk typecheck && pnpm --filter @rinova/proxy-cli typecheck",
+    "publish:sdk": "pnpm --filter @rinova/proxy-sdk publish",
+    "publish:cli": "pnpm --filter @rinova/proxy-cli publish",
+    "publish:sdk-dry-run": "pnpm --filter @rinova/proxy-sdk publish --dry-run",
+    "publish:cli-dry-run": "pnpm --filter @rinova/proxy-cli publish --dry-run",
+    "publish:all-dry-run": "pnpm publish:sdk-dry-run && pnpm publish:cli-dry-run"
   },
   "license": "MIT",
   "packageManager": "pnpm@10.25.0"

@@ -1,8 +1,9 @@
 {
-  "name": "@rinova/jms-sdk",
+  "name": "@rinova/proxy-sdk",
   "version": "1.2.1",
-  "description": "JMS subscription to Clash config converter — SDK",
+  "description": "Proxy subscription to Clash config converter — SDK",
   "type": "module",
+  "keywords": ["proxy", "subscription", "clash", "shadowsocks", "v2ray", "trojan", "hysteria2", "vpn", "base64"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

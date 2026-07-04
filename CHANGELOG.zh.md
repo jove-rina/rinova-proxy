@@ -4,15 +4,15 @@
 
 ### 新增
 
-- **Monorepo 拆分**：SDK（`@rinova/jms-sdk`）与 CLI（`@rinova/jms-cli`）双包分离，pnpm workspace 管理。
+- **Monorepo 拆分**：SDK（`@rinova/proxy-sdk`）与 CLI（`@rinova/proxy-cli`）双包分离，pnpm workspace 管理。
   - SDK 依赖 axios + js-yaml，**不含 Commander**
-  - CLI 依赖 `@rinova/jms-sdk` + commander + js-yaml
+  - CLI 依赖 `@rinova/proxy-sdk` + commander + js-yaml
   - `pnpm build` / `pnpm test` / `pnpm typecheck` 根脚本覆盖双包
-- **SDK (`@rinova/jms-sdk`)**: 程序化 API，支持在 Node.js 项目中 import 使用。
+- **SDK (`@rinova/proxy-sdk`)**: 程序化 API，支持在 Node.js 项目中 import 使用。
   - `convert(url)` — 一键拉取订阅 → 解析 → Clash 配置
   - `convertFromLines(lines)` — 离线转换（无网络请求）
-  - 子模块按需导入：`@rinova/jms-sdk/parser`、`/fetch`、`/builder`、`/server`
-  - 包名改为 `@rinova/jms-sdk`，支持 scoped publish
+  - 子模块按需导入：`@rinova/proxy-sdk/parser`、`/fetch`、`/builder`、`/server`
+  - 包名改为 `@rinova/proxy-sdk`，支持 scoped publish
 - **i18n 国际化**: 零依赖本地化模块，支持 en/zh 双语。
   - `t(key, params?)` — 按 `LANG`/`LC_ALL` 自动中英切换
   - `getLang()` — 获取当前语言代码
@@ -42,8 +42,31 @@
 
 ### 发布
 
-- 已发布至 npm：`@rinova/jms-sdk@1.2.0` + `@rinova/jms-cli@1.2.0`
-- 使用方式：`pnpm add -g @rinova/jms-cli` 或 `pnpm add @rinova/jms-sdk`
+- 已发布至 npm：`@rinova/proxy-sdk@1.2.0` + `@rinova/proxy-cli@1.2.0`
+- 使用方式：`pnpm add -g @rinova/proxy-cli` 或 `pnpm add @rinova/proxy-sdk`
+
+---
+
+## [1.2.1] — 2026-07-04
+
+### 新增
+
+- **`getLang()`**: SDK 新增导出，返回当前语言代码（`'en'` | `'zh'`）。
+- **服务标题 i18n**: 启动横幅使用 `t('server_title')` 键；中文 locale 显示 `"JMS 转换服务"`。
+- **许可证**: ISC → MIT，新增根目录 `LICENSE` 文件。
+- **分包 README**: 新增四份 — `packages/sdk/README(.zh).md` 和 `packages/cli/README(.zh).md`。
+
+### 修复
+
+- **优雅关闭**: `srv.close(() => process.exit(0))` 确保端口完全释放后再退出，防止重启时「端口被占用」。
+- **User-Agent**: 更新为 `@rinova/proxy-sdk/1.2.1`（原为 `1.2.0`）。
+- **CLI 导入清理**: 移除未使用的 `fileURLToPath` 和 `dirname` 导入。
+- **README.zh.md**: 新增国际化章节，更新项目结构树。
+- **README.md**: 结构树根目录从 `jms-convert-tool/` 改为 `rinova-jms/`。
+
+### 文档
+
+- CHANGELOG: 首次记录 v1.2.1 polish 发布。
 
 ---
 

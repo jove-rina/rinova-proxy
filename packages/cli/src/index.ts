@@ -3,10 +3,9 @@
 import { Command } from 'commander';
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { dump, load } from 'js-yaml';
-import { convert, t, getLang } from '@rinova/jms-sdk';
-import { startServer } from '@rinova/jms-sdk/server';
+import { convert, t, getLang } from '@rinova/proxy-sdk';
+import { startServer } from '@rinova/proxy-sdk/server';
 
 interface CliOptions {
   url: string;
@@ -20,10 +19,10 @@ const program = new Command();
 
 if (lang === 'zh') {
   program
-    .name('jms-cli')
-    .description('JMS 订阅链接 → Clash 配置文件')
+    .name('proxy-cli')
+    .description('代理订阅链接 → Clash 配置文件')
     .version('1.2.1')
-    .option('-u, --url <url>', 'JMS 订阅链接')
+    .option('-u, --url <url>', '代理订阅链接')
     .option('-o, --output <path>', '输出文件路径', '')
     .option('-p, --port <port>', '服务模式：监听端口（默认 25500）')
     .option('-i, --interval <min>', '服务模式：刷新间隔（分钟）', '60')
@@ -31,10 +30,10 @@ if (lang === 'zh') {
     .option('--merge <file>', '合并到现有配置', '');
 } else {
   program
-    .name('jms-cli')
-    .description('JMS subscription → Clash config')
+    .name('proxy-cli')
+    .description('Proxy subscription → Clash config')
     .version('1.2.1')
-    .option('-u, --url <url>', 'JMS subscription URL')
+    .option('-u, --url <url>', 'Proxy subscription URL')
     .option('-o, --output <path>', 'output path', '')
     .option('-p, --port <port>', 'serve mode: HTTP port (default 25500)')
     .option('-i, --interval <min>', 'serve mode: refresh interval (minutes)', '60')
@@ -100,7 +99,10 @@ const main = async (): Promise<void> => {
     if (!opts.url) { console.error(`❌ ${t('mode_requires_url')}`); program.help(); process.exit(1); }
     const port = parseInt(opts.port, 10) || 25500;
     const srv = await startServer({ url: opts.url, port, intervalMin: parseInt(opts.interval || '60', 10), ruleMode: opts.rules as 'builtin' | 'external' });
-    const shutdown = (): void => { console.log(`\n🛑 ${t('shutting_down')}`); srv.close(); process.exit(0); };
+    const shutdown = (): void => {
+      console.log(`\n🛑 ${t('shutting_down')}`);
+      srv.close(() => process.exit(0));
+    };
     process.on('SIGINT', shutdown);
     process.on('SIGTERM', shutdown);
   } else if (opts.url) {

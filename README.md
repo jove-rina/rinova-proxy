@@ -1,6 +1,6 @@
-# Rinova JMS 
+# Rinova Proxy 
 
-Convert JMS (Just My Sockets) subscription links to Clash configuration files.
+Convert subscription links to Clash configuration files.
 
 ## Installation
 
@@ -8,18 +8,18 @@ Convert JMS (Just My Sockets) subscription links to Clash configuration files.
 
 ```bash
 # CLI (global)
-pnpm add -g @rinova/jms-cli
-# or: npm install -g @rinova/jms-cli
+pnpm add -g @rinova/proxy-cli
+# or: npm install -g @rinova/proxy-cli
 
 # SDK (as a library)
-pnpm add @rinova/jms-sdk
+pnpm add @rinova/proxy-sdk
 ```
 
 ### From source
 
 ```bash
-git clone git@github.com:jove-rina/rinova-jms.git
-cd rinova-jms
+git clone git@github.com:jove-rina/rinova-proxy.git
+cd rinova-proxy
 pnpm install
 pnpm build
 ```
@@ -31,7 +31,7 @@ pnpm build
 ### Global install (after npm publish)
 
 ```bash
-pnpm add -g @rinova/jms-cli
+pnpm add -g @rinova/proxy-cli
 
 jms-cli -u "https://your-jms-subscription-url"
 jms-cli -u "https://..." -o ~/Downloads/my-clash.yaml
@@ -67,21 +67,21 @@ Update interval: 60
 ### Build and run
 
 ```bash
-pnpm --filter @rinova/jms-cli start -u "https://..."
+pnpm --filter @rinova/proxy-cli start -u "https://..."
 # or
 node packages/cli/dist/index.js -u "https://..."
 ```
 
 ## SDK Usage
 
-Use `@rinova/jms-sdk` as a library in your project:
+Use `@rinova/proxy-sdk` as a library in your project:
 
 ```bash
-pnpm add @rinova/jms-sdk
+pnpm add @rinova/proxy-sdk
 ```
 
 ```typescript
-import { convert } from '@rinova/jms-sdk';
+import { convert } from '@rinova/proxy-sdk';
 
 // One-shot: fetch → parse → build Clash config
 const { yaml, nodes } = await convert('https://jms-sub-url');
@@ -92,7 +92,7 @@ writeFileSync('clash.yaml', yaml);
 Offline conversion from pre-existing URI lines:
 
 ```typescript
-import { convertFromLines } from '@rinova/jms-sdk';
+import { convertFromLines } from '@rinova/proxy-sdk';
 
 const { config } = convertFromLines([
   'ss://YWVz...@host:8388#US-01',
@@ -103,17 +103,17 @@ const { config } = convertFromLines([
 Import submodules as needed:
 
 ```typescript
-import { parseURI } from '@rinova/jms-sdk/parser';
-import { startServer } from '@rinova/jms-sdk/server';
+import { parseURI } from '@rinova/proxy-sdk/parser';
+import { startServer } from '@rinova/proxy-sdk/server';
 ```
 
 | Import path | Available API |
 |-------------|---------------|
-| `@rinova/jms-sdk` | `convert()`, `convertFromLines()`, types, submodule re-exports |
-| `@rinova/jms-sdk/parser` | `parseURI()`, `parseLines()` |
-| `@rinova/jms-sdk/fetch` | `fetchSubscription()`, `deduplicateNames()` |
-| `@rinova/jms-sdk/builder` | `buildConfig()`, `toYaml()` |
-| `@rinova/jms-sdk/server` | `startServer()` |
+| `@rinova/proxy-sdk` | `convert()`, `convertFromLines()`, types, submodule re-exports |
+| `@rinova/proxy-sdk/parser` | `parseURI()`, `parseLines()` |
+| `@rinova/proxy-sdk/fetch` | `fetchSubscription()`, `deduplicateNames()` |
+| `@rinova/proxy-sdk/builder` | `buildConfig()`, `toYaml()` |
+| `@rinova/proxy-sdk/server` | `startServer()` |
 
 ## Supported Protocols
 
@@ -174,7 +174,7 @@ LANG=zh_CN.UTF-8 jms-cli -u "https://..."
 The translation function `t(key, params?)` is available from the SDK:
 
 ```typescript
-import { t, getLang } from '@rinova/jms-sdk';
+import { t, getLang } from '@rinova/proxy-sdk';
 
 console.log(t('refreshing'));              // "Refreshing subscription..."
 console.log(t('parsed', { count: 5 }));    // "Parsed: 5 nodes"
@@ -192,7 +192,7 @@ LANG=zh_CN.UTF-8 jms-cli --help   # Chinese options
 
 ```bash
 pnpm test               # SDK all tests (34 + 6 = 40 cases)
-pnpm --filter @rinova/jms-sdk test:all
+pnpm --filter @rinova/proxy-sdk test:all
 ```
 
 | Suite | Location | Cases |
@@ -206,14 +206,14 @@ pnpm --filter @rinova/jms-sdk test:all
 ## Project Structure
 
 ```
-jms-convert-tool/
+rinova-proxy/
 ├── pnpm-workspace.yaml         workspace config
 ├── package.json                root: dev / build / test / typecheck shortcuts
 ├── CHANGELOG.md
 ├── README.md
 ├── README.zh.md
 ├── packages/
-│   ├── sdk/                    → @rinova/jms-sdk
+│   ├── sdk/                    → @rinova/proxy-sdk
 │   │   ├── package.json        deps: axios + js-yaml
 │   │   ├── tsconfig.json
 │   │   └── src/
@@ -229,8 +229,8 @@ jms-convert-tool/
 │   │       ├── utils.ts        utilities
 │   │       ├── types.ts        type definitions
 │   │       └── __tests__/      40 test cases
-│   └── cli/                    → @rinova/jms-cli
-│       ├── package.json        deps: @rinova/jms-sdk + commander
+│   └── cli/                    → @rinova/proxy-cli
+│       ├── package.json        deps: @rinova/proxy-sdk + commander
 │       ├── tsconfig.json
 │       └── src/index.ts        CLI entry (bin: jms-cli)
 ```

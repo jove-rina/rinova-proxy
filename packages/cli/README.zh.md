@@ -1,12 +1,12 @@
-# @rinova/jms-cli
+# @rinova/proxy-cli
 
-JMS 订阅链接 → Clash 配置文件转换工具 — 命令行工具。
+代理订阅链接 → Clash 配置文件转换工具 — 命令行工具。
 
 ## 安装
 
 ```bash
-pnpm add -g @rinova/jms-cli
-# 或：npm install -g @rinova/jms-cli
+pnpm add -g @rinova/proxy-cli
+# 或：npm install -g @rinova/proxy-cli
 ```
 
 ## 使用

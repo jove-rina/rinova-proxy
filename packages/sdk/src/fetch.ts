@@ -10,7 +10,8 @@ export const fetchSubscription = async (url: string): Promise<string[]> => {
     timeout: 15_000,
     responseType: 'text',
     headers: {
-      'User-Agent': '@rinova/jms-sdk/1.2.0',
+      // Keep in sync with packages/sdk/package.json version
+      'User-Agent': '@rinova/proxy-sdk/1.2.1',
     },
   });
 

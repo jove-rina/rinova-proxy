@@ -4,15 +4,15 @@
 
 ### Added
 
-- **Monorepo split**: SDK (`@rinova/jms-sdk`) and CLI (`@rinova/jms-cli`) separated as two packages under pnpm workspace.
+- **Monorepo split**: SDK (`@rinova/proxy-sdk`) and CLI (`@rinova/proxy-cli`) separated as two packages under pnpm workspace.
   - SDK depends on axios + js-yaml, **no Commander**
-  - CLI depends on `@rinova/jms-sdk` + commander + js-yaml
+  - CLI depends on `@rinova/proxy-sdk` + commander + js-yaml
   - Root scripts (`pnpm build` / `pnpm test` / `pnpm typecheck`) cover both packages
-- **SDK (`@rinova/jms-sdk`)**: Programmatic API for Node.js projects.
+- **SDK (`@rinova/proxy-sdk`)**: Programmatic API for Node.js projects.
   - `convert(url)` — one-shot: fetch → parse → Clash config
   - `convertFromLines(lines)` — offline conversion (no network)
-  - Submodule imports: `@rinova/jms-sdk/parser`, `/fetch`, `/builder`, `/server`
-  - Package renamed to scoped `@rinova/jms-sdk`
+  - Submodule imports: `@rinova/proxy-sdk/parser`, `/fetch`, `/builder`, `/server`
+  - Package renamed to scoped `@rinova/proxy-sdk`
 - **i18n**: Zero-dependency localization module with en/zh support.
   - `t(key, params?)` — translate by `LANG`/`LC_ALL` env
   - `getLang()` — get current language code (`'en'` | `'zh'`)
@@ -42,8 +42,31 @@
 
 ### Release
 
-- Published to npm: `@rinova/jms-sdk@1.2.0` + `@rinova/jms-cli@1.2.0`
-- Usage: `pnpm add -g @rinova/jms-cli` or `pnpm add @rinova/jms-sdk`
+- Published to npm: `@rinova/proxy-sdk@1.2.0` + `@rinova/proxy-cli@1.2.0`
+- Usage: `pnpm add -g @rinova/proxy-cli` or `pnpm add @rinova/proxy-sdk`
+
+---
+
+## [1.2.1] — 2026-07-04
+
+### Added
+
+- **`getLang()`**: New SDK export, returns current language code (`'en'` | `'zh'`).
+- **Server title i18n**: Startup banner uses `t('server_title')` key; zh locale now shows `"JMS 转换服务"`.
+- **License**: Changed from ISC to MIT. Added `LICENSE` file to root.
+- **Package READMEs**: Four new files — `packages/sdk/README(.zh).md` and `packages/cli/README(.zh).md`.
+
+### Fixed
+
+- **Graceful shutdown**: `srv.close(() => process.exit(0))` ensures the port is fully released before exit, preventing "port in use" on restart.
+- **User-Agent**: Updated to `@rinova/proxy-sdk/1.2.1` (was `1.2.0`).
+- **CLI imports**: Removed unused `fileURLToPath` and `dirname` imports.
+- **README.zh.md**: Added i18n section and updated project structure tree.
+- **README.md**: Structure tree root directory changed from `jms-convert-tool/` to `rinova-jms/`.
+
+### Docs
+
+- CHANGELOG: First recording of v1.2.1 polish release.
 
 ---
 

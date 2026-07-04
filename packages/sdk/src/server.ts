@@ -98,15 +98,28 @@ export const startServer = async (opts: ServerOptions): Promise<http.Server> => 
   });
 
   server.listen(opts.port, '127.0.0.1', () => {
-    console.log(`┌───────────────────────────────────────────┐`);
-    console.log(`│  ${t('server_title')}                      │`);
-    console.log(`│                                           │`);
-    console.log(`│  ${t('server_banner_clash')}  http://127.0.0.1:${String(opts.port).padEnd(5)}│`);
-    console.log(`│                     /clash.yaml           │`);
-    console.log(`│                                           │`);
-    console.log(`│  ${t('server_banner_health')}  http://127.0.0.1:${String(opts.port).padEnd(5)}│`);
-    console.log(`│                     /health               │`);
-    console.log(`└───────────────────────────────────────────┘`);
+    const base = `http://127.0.0.1:${opts.port}`;
+    const C = {
+      rst: '\x1b[0m', b: '\x1b[1m', d: '\x1b[2m',
+      // Gradient for title: green → cyan → blue
+      g1: '\x1b[38;5;82m',  g2: '\x1b[38;5;83m',  g3: '\x1b[38;5;84m',
+      c1: '\x1b[38;5;87m',  c2: '\x1b[38;5;117m', c3: '\x1b[38;5;153m',
+      // Neon border
+      n1: '\x1b[38;5;51m',  n2: '\x1b[38;5;45m',
+      // Accents
+      y: '\x1b[38;5;228m', w: '\x1b[38;5;255m', dim: '\x1b[38;5;245m',
+    };
+    // Glowing title: each letter group a different shade
+    const title = `${C.b}${C.g1}R${C.g2}I${C.g3}N${C.c1}O${C.c2}V${C.c3}A${C.rst}${C.d}  ${t('server_title')}${C.rst}`;
+    console.log(`\n${C.n2}╔══════════════════════════════════════════════════╗${C.rst}`);
+    console.log(`${C.n2}║${C.rst}  ${title}            ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}║${C.rst}                                              ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}║${C.rst}  ${C.y}▸ ${C.rst}${C.b}${C.w}${base}/clash.yaml${C.rst}          ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}║${C.rst}  ${C.y}▸ ${C.rst}${C.d}${C.dim}${t('server_banner_clash')}${C.rst}                            ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}║${C.rst}                                              ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}║${C.rst}  ${C.y}▸ ${C.rst}${C.b}${C.w}${base}/health${C.rst}              ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}║${C.rst}  ${C.y}▸ ${C.rst}${C.d}${C.dim}${t('server_banner_health')}${C.rst}                            ${C.n2}║${C.rst}`);
+    console.log(`${C.n2}╚══════════════════════════════════════════════════╝${C.rst}\n`);
   });
 
   return server;
