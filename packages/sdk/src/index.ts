@@ -2,6 +2,7 @@ import { fetchSubscription, deduplicateNames } from './fetch.js';
 import { parseLines } from './parser.js';
 import { buildConfig, toYaml } from './builder.js';
 import type { ProxyNode, ClashConfig } from './types.js';
+import { t } from './i18n.js';
 
 // Re-export types for convenience
 export type { ProxyNode, ProxyType, ProxyGroup, ClashConfig } from './types.js';
@@ -11,6 +12,9 @@ export { parseURI, parseLines } from './parser.js';
 export { buildConfig, toYaml } from './builder.js';
 export { fetchSubscription, deduplicateNames } from './fetch.js';
 export { startServer } from './server.js';
+export { t } from './i18n.js';
+export { getLang } from './i18n.js';
+export type { I18nParams } from './i18n.js';
 
 // ============================================================
 //  High-level API
@@ -43,7 +47,7 @@ export const convert = async (url: string, opts?: ConvertOptions): Promise<Conve
   const nodes = parseLines(lines);
 
   if (nodes.length === 0) {
-    throw new Error('No valid proxy nodes found in subscription');
+    throw new Error(t('err_no_nodes_subscription'));
   }
 
   if (shouldDedup) {
@@ -66,7 +70,7 @@ export const convertFromLines = (lines: string[], opts?: ConvertOptions): Conver
   const nodes = parseLines(lines);
 
   if (nodes.length === 0) {
-    throw new Error('No valid proxy nodes found in the input');
+    throw new Error(t('err_no_nodes_input'));
   }
 
   if (shouldDedup) {

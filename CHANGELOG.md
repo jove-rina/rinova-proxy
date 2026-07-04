@@ -13,6 +13,10 @@
   - `convertFromLines(lines)` — offline conversion (no network)
   - Submodule imports: `@rinova/jms-sdk/parser`, `/fetch`, `/builder`, `/server`
   - Package renamed to scoped `@rinova/jms-sdk`
+- **i18n**: Zero-dependency localization module with en/zh support.
+  - `t(key, params?)` — translate by `LANG`/`LC_ALL` env
+  - `getLang()` — get current language code (`'en'` | `'zh'`)
+  - `locales/en.json` + `locales/zh.json` covering all logs, errors, and Commander help
 - **`package.json` exports**: Main entry + 4 submodules, full type declarations.
 - **Empty node protection**: `convert()` / `convertFromLines()` throw `Error` on empty results.
 - **`publishConfig`**: `"access": "public"` + `files` whitelist, ready for npm publish.

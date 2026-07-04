@@ -1,5 +1,5 @@
 {
-  "name": "jms-convert-monorepo",
+  "name": "rinova-jms",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter @rinova/jms-cli dev",

@@ -13,6 +13,10 @@
   - `convertFromLines(lines)` — 离线转换（无网络请求）
   - 子模块按需导入：`@rinova/jms-sdk/parser`、`/fetch`、`/builder`、`/server`
   - 包名改为 `@rinova/jms-sdk`，支持 scoped publish
+- **i18n 国际化**: 零依赖本地化模块，支持 en/zh 双语。
+  - `t(key, params?)` — 按 `LANG`/`LC_ALL` 自动中英切换
+  - `getLang()` — 获取当前语言代码
+  - `locales/en.json` + `locales/zh.json`，覆盖全部日志、错误消息、Commander help
 - **`package.json` exports**: 主入口 + 4 子模块，类型声明完整。
 - **SDK 空节点保护**: `convert()` / `convertFromLines()` 在无有效节点时 throw `Error`。
 - **`publishConfig`**: `"access": "public"` + `files` 白名单，NPM 发布就绪。

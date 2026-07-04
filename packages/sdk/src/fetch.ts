@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { padBase64 } from './utils.js';
+import { t } from './i18n.js';
 
 /**
  * 拉取 JMS 订阅链接并 Base64 解码
@@ -9,7 +10,7 @@ export const fetchSubscription = async (url: string): Promise<string[]> => {
     timeout: 15_000,
     responseType: 'text',
     headers: {
-      'User-Agent': 'jms-convert-tool/1.0',
+      'User-Agent': '@rinova/jms-sdk/1.2.0',
     },
   });
 
@@ -39,7 +40,7 @@ export const fetchSubscription = async (url: string): Promise<string[]> => {
     .filter((l) => l.length > 0 && !l.startsWith('#'));
 
   if (lines.length === 0) {
-    throw new Error('订阅链接返回为空或格式无法识别');
+    throw new Error(t('err_empty_subscription'));
   }
 
   return lines;

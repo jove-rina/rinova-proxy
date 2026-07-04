@@ -1,5 +1,6 @@
 import type { ProxyNode } from './types.js';
 import { padBase64, safeDecodeURI } from './utils.js';
+import { t } from './i18n.js';
 
 // ============================================================
 //  SS 解析
@@ -19,7 +20,7 @@ const parseSS = (uri: string): ProxyNode => {
     const hostPort = body.slice(atIdx + 1);
     const [server, portStr] = hostPort.split(':');
     const port = parseInt(portStr, 10);
-    if (!server || isNaN(port)) throw new Error(`SS 地址格式错误: ${hostPort}`);
+    if (!server || isNaN(port)) throw new Error(t('err_ss_address', { host: hostPort }));
 
     const decoded = Buffer.from(padBase64(b64Part), 'base64').toString('utf-8');
     const atInDecoded = decoded.indexOf('@');
@@ -28,22 +29,22 @@ const parseSS = (uri: string): ProxyNode => {
       return { name: rawName || server, type: 'ss', server, port, cipher: method || 'none', password: pwdParts.join(':') };
     }
     const colonIdx = decoded.indexOf(':');
-    if (colonIdx === -1) throw new Error(`SS SIP002 凭据格式错误: ${decoded}`);
+    if (colonIdx === -1) throw new Error(t('err_ss_sip002_credentials', { raw: decoded }));
     return { name: rawName || server, type: 'ss', server, port, cipher: decoded.slice(0, colonIdx), password: decoded.slice(colonIdx + 1) };
   }
 
   const decoded = Buffer.from(padBase64(body), 'base64').toString('utf-8');
   const atInDecoded = decoded.indexOf('@');
-  if (atInDecoded === -1) throw new Error(`SS legacy 格式无法找到 @: ${decoded}`);
+  if (atInDecoded === -1) throw new Error(t('err_ss_legacy_no_at', { raw: decoded }));
 
   const cred = decoded.slice(0, atInDecoded);
   const hostPort = decoded.slice(atInDecoded + 1);
   const [server, portStr] = hostPort.split(':');
   const port = parseInt(portStr, 10);
-  if (!server || isNaN(port)) throw new Error(`SS legacy 地址格式错误: ${hostPort}`);
+  if (!server || isNaN(port)) throw new Error(t('err_ss_legacy_address', { host: hostPort }));
 
   const [method, ...pwdParts] = cred.split(':');
-  if (!method) throw new Error(`SS legacy 缺少 method: ${cred}`);
+  if (!method) throw new Error(t('err_ss_legacy_no_method', { raw: cred }));
 
   return { name: rawName || server, type: 'ss', server, port, cipher: method, password: pwdParts.join(':') };
 };
@@ -65,7 +66,7 @@ const parseVMess = (uri: string): ProxyNode => {
   const jsonStr = Buffer.from(padBase64(b64), 'base64').toString('utf-8');
 
   let obj: VmessConfig;
-  try { obj = JSON.parse(jsonStr); } catch { throw new Error(`VMess JSON 解析失败: ${uri}`); }
+  try { obj = JSON.parse(jsonStr); } catch { throw new Error(t('err_vmess_parse')); }
 
   const node: ProxyNode = {
     name: safeDecodeURI(obj.ps || obj.remarks) || 'Unnamed',
@@ -77,7 +78,7 @@ const parseVMess = (uri: string): ProxyNode => {
     cipher: obj.scy || 'auto',
   };
 
-  if (!node.server || !node.port) throw new Error(`VMess 缺少 server 或 port: ${uri}`);
+  if (!node.server || !node.port) throw new Error(t('err_vmess_no_server'));
 
   const net = obj.net || 'tcp';
 
@@ -178,14 +179,15 @@ export const parseURI = (uri: string): ProxyNode => {
   if (uri.startsWith('vmess://')) return parseVMess(uri);
   if (uri.startsWith('trojan://')) return parseTrojan(uri);
   if (uri.startsWith('hysteria2://') || uri.startsWith('hy2://')) return parseHysteria2(uri);
-  throw new Error(`不支持的协议类型: ${uri.slice(0, 10)}...`);
+  throw new Error(t('err_unsupported_protocol', { prefix: uri.slice(0, 10) }));
 };
 
 export const parseLines = (lines: string[]): ProxyNode[] => {
   const nodes: ProxyNode[] = [];
   for (const line of lines) {
     try { nodes.push(parseURI(line)); } catch (err) {
-      console.warn(`⚠️  跳过无法解析的节点: ${err instanceof Error ? err.message : err}`);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`⚠️  ${t('skip_node', { msg })}`);
     }
   }
   return nodes;

@@ -146,6 +146,35 @@ Specific JMS node
 
 > **Note**: Switch nodes in `🚀 Node Select`; keep `🌍 Foreign Websites` at its default.
 
+## Internationalization (i18n)
+
+CLI and SDK messages automatically adapt to your system language based on the `LANG` or `LC_ALL` environment variable. If the value starts with `zh`, Chinese is used; otherwise English is the default.
+
+```bash
+# English (default on most systems)
+jms-cli -u "https://..."
+
+# Chinese
+LANG=zh_CN.UTF-8 jms-cli -u "https://..."
+```
+
+The translation function `t(key, params?)` is available from the SDK:
+
+```typescript
+import { t, getLang } from '@rinova/jms-sdk';
+
+console.log(t('refreshing'));              // "Refreshing subscription..."
+console.log(t('parsed', { count: 5 }));    // "Parsed: 5 nodes"
+console.log(getLang());                    // "en" or "zh"
+```
+
+Commander help text also switches language:
+
+```bash
+LANG=en_US.UTF-8 jms-cli --help   # English options
+LANG=zh_CN.UTF-8 jms-cli --help   # Chinese options
+```
+
 ## Testing
 
 ```bash
@@ -180,6 +209,10 @@ jms-convert-tool/
 │   │       ├── fetch.ts        fetch + Base64 decode + dedup
 │   │       ├── builder.ts      Clash YAML assembly
 │   │       ├── server.ts       HTTP subscription service
+│   │       ├── i18n.ts        i18n: t(), getLang()
+│   │       ├── locales/
+│   │       │   ├── en.json    英文翻译
+│   │       │   └── zh.json    中文翻译
 │   │       ├── utils.ts        utilities
 │   │       ├── types.ts        type definitions
 │   │       └── __tests__/      40 test cases

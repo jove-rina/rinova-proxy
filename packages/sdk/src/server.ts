@@ -2,6 +2,7 @@ import http from 'node:http';
 import { fetchSubscription, deduplicateNames } from './fetch.js';
 import { parseLines } from './parser.js';
 import { buildConfig, toYaml } from './builder.js';
+import { t } from './i18n.js';
 
 interface ServerOptions {
   url: string;
@@ -23,12 +24,12 @@ export const startServer = async (opts: ServerOptions): Promise<http.Server> => 
 
   const refresh = async (): Promise<{ skipped: boolean }> => {
     if (refreshing) {
-      console.log(`  ⏭️  刷新已在进行中，跳过`);
+      console.log(`  ⏭️  ${t('refresh_skip')}`);
       return { skipped: true };
     }
     refreshing = true;
     try {
-      console.log(`[${new Date().toLocaleTimeString()}] 🔄 刷新订阅...`);
+      console.log(`[${new Date().toLocaleTimeString()}] 🔄 ${t('refreshing')}`);
       const lines = await fetchSubscription(opts.url);
       const nodes = parseLines(lines);
       deduplicateNames(nodes);
@@ -36,16 +37,16 @@ export const startServer = async (opts: ServerOptions): Promise<http.Server> => 
       const yaml = toYaml(config);
       cache = { yaml, nodeCount: nodes.length, updatedAt: Date.now() };
       refreshError = null;
-      console.log(`  ✅ 刷新成功 — ${nodes.length} 个节点`);
+      console.log(`  ✅ ${t('refresh_ok', { count: nodes.length })}`);
       return { skipped: false };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       refreshError = msg;
       if (cache) {
-        console.warn(`  ⚠️  刷新失败，保留上次缓存: ${msg}`);
+        console.warn(`  ⚠️  ${t('refresh_fail', { msg })}`);
         return { skipped: false };
       } else {
-        console.error(`  ❌ 首次拉取失败: ${msg}`);
+        console.error(`  ❌ ${t('first_fetch_fail', { msg })}`);
         throw err;
       }
     } finally {
@@ -53,9 +54,9 @@ export const startServer = async (opts: ServerOptions): Promise<http.Server> => 
     }
   };
 
-  console.log('🔗 首次拉取订阅...');
+  console.log(`🔗 ${t('refreshing')}`);
   await refresh();
-  console.log(`📡 启动 HTTP 服务，每 ${opts.intervalMin} 分钟自动刷新\n`);
+  console.log(`📡 ${t('http_start', { interval: opts.intervalMin })}\n`);
 
   const refreshTimer = setInterval(() => { refresh().catch(() => {}); }, opts.intervalMin * 60_000);
 
@@ -89,24 +90,23 @@ export const startServer = async (opts: ServerOptions): Promise<http.Server> => 
 
   server.on('error', (err: NodeJS.ErrnoException) => {
     if (err.code === 'EADDRINUSE') {
-      const msg = `端口 ${opts.port} 已被占用，请使用其他端口`;
+      const msg = t('port_in_use', { port: opts.port });
       server.close();
       throw new Error(msg);
     }
     throw err;
   });
-  // CLI 模式通过 index.ts 注册 SIGINT/SIGTERM
 
   server.listen(opts.port, '127.0.0.1', () => {
-    console.log(`┌──────────────────────────────────────┐`);
-    console.log(`│  JMS Convert Service                 │`);
-    console.log(`│                                      │`);
-    console.log(`│  Clash 订阅:  http://127.0.0.1:${String(opts.port).padEnd(5)}│`);
-    console.log(`│              /clash.yaml             │`);
-    console.log(`│                                      │`);
-    console.log(`│  健康检查:    http://127.0.0.1:${String(opts.port).padEnd(5)}│`);
-    console.log(`│              /health                 │`);
-    console.log(`└──────────────────────────────────────┘`);
+    console.log(`┌───────────────────────────────────────────┐`);
+    console.log(`│  ${t('server_title')}                      │`);
+    console.log(`│                                           │`);
+    console.log(`│  ${t('server_banner_clash')}  http://127.0.0.1:${String(opts.port).padEnd(5)}│`);
+    console.log(`│                     /clash.yaml           │`);
+    console.log(`│                                           │`);
+    console.log(`│  ${t('server_banner_health')}  http://127.0.0.1:${String(opts.port).padEnd(5)}│`);
+    console.log(`│                     /health               │`);
+    console.log(`└───────────────────────────────────────────┘`);
   });
 
   return server;
