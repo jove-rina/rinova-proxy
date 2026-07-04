@@ -36,7 +36,14 @@
 
 - README 新增「SDK 使用」章节，含安装、示例、子模块表格。
 - README 项目结构新增 `sdk.ts` / `sdk.test.ts`。
+- README 新增「国际化（i18n）」章节，说明 `LANG` 用法。
+- README 安装部分改为优先展示 npm 发布命令。
 - CHANGELOG 首次记录 SDK 与包名变更。
+
+### 发布
+
+- 已发布至 npm：`@rinova/jms-sdk@1.2.0` + `@rinova/jms-cli@1.2.0`
+- 使用方式：`pnpm add -g @rinova/jms-cli` 或 `pnpm add @rinova/jms-sdk`
 
 ---
 

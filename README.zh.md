@@ -1,12 +1,25 @@
-# JMS Convert Tool
+# Rinova JMS 
 
 JMS（Just My Sockets）订阅链接 → Clash 配置文件转换工具。
 
 ## 安装
 
+### 从 npm 安装（已发布）
+
 ```bash
-git clone git@github.com:rina-coding/jms-convert-tool.git
-cd jms-convert-tool
+# CLI（全局安装）
+pnpm add -g @rinova/jms-cli
+# 或：npm install -g @rinova/jms-cli
+
+# SDK（作为库引用）
+pnpm add @rinova/jms-sdk
+```
+
+### 从源码构建
+
+```bash
+git clone git@github.com:jove-rina/rinova-jms.git
+cd rinova-jms
 pnpm install
 pnpm build
 ```
@@ -194,4 +207,4 @@ jms-convert-tool/
 
 ## License
 
-ISC
+MIT

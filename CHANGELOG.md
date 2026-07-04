@@ -36,7 +36,14 @@
 
 - README: new "SDK Usage" section with install, examples, submodule table.
 - README: project structure updated with `sdk.ts` / `sdk.test.ts`.
+- README: added "Internationalization (i18n)" section with `LANG` usage.
+- README: installation now shows npm publish commands first.
 - CHANGELOG: first recording of SDK and package rename.
+
+### Release
+
+- Published to npm: `@rinova/jms-sdk@1.2.0` + `@rinova/jms-cli@1.2.0`
+- Usage: `pnpm add -g @rinova/jms-cli` or `pnpm add @rinova/jms-sdk`
 
 ---
 

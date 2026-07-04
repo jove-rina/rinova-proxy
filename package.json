@@ -9,5 +9,6 @@
     "publish:sdk": "pnpm --filter @rinova/jms-sdk publish",
     "publish:cli": "pnpm --filter @rinova/jms-cli publish"
   },
+  "license": "MIT",
   "packageManager": "pnpm@10.25.0"
 }

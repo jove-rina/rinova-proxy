@@ -1,12 +1,25 @@
-# JMS Convert Tool
+# Rinova JMS 
 
 Convert JMS (Just My Sockets) subscription links to Clash configuration files.
 
 ## Installation
 
+### From npm (published)
+
 ```bash
-git clone git@github.com:rina-coding/jms-convert-tool.git
-cd jms-convert-tool
+# CLI (global)
+pnpm add -g @rinova/jms-cli
+# or: npm install -g @rinova/jms-cli
+
+# SDK (as a library)
+pnpm add @rinova/jms-sdk
+```
+
+### From source
+
+```bash
+git clone git@github.com:jove-rina/rinova-jms.git
+cd rinova-jms
 pnpm install
 pnpm build
 ```
@@ -228,4 +241,4 @@ See [CHANGELOG.md](./CHANGELOG.md) / [CHANGELOG.zh.md](./CHANGELOG.zh.md).
 
 ## License
 
-ISC
+MIT

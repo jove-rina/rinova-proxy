@@ -22,7 +22,7 @@ if (lang === 'zh') {
   program
     .name('jms-cli')
     .description('JMS 订阅链接 → Clash 配置文件')
-    .version('1.2.0')
+    .version('1.2.1')
     .option('-u, --url <url>', 'JMS 订阅链接')
     .option('-o, --output <path>', '输出文件路径', '')
     .option('-p, --port <port>', '服务模式：监听端口（默认 25500）')
@@ -33,7 +33,7 @@ if (lang === 'zh') {
   program
     .name('jms-cli')
     .description('JMS subscription → Clash config')
-    .version('1.2.0')
+    .version('1.2.1')
     .option('-u, --url <url>', 'JMS subscription URL')
     .option('-o, --output <path>', 'output path', '')
     .option('-p, --port <port>', 'serve mode: HTTP port (default 25500)')
